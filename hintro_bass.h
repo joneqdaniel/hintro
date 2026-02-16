@@ -17,7 +17,7 @@ typedef BOOL BASSDEF(EXIT)(void);
 typedef BOOL BASSDEF(PLAY)(DWORD handle, BOOL restart);
 typedef BOOL (CALLBACK INIT)(int freq);
 
-DWORD CALLBACK sound_proc(HSTREAM handle, void *buffer, DWORD length, void *user);
+DWORD CALLBACK sound_proc(HSTREAM handle, void *buf, DWORD len, void *user);
 void           sound_halt();
 BOOL           sound_init(int freq);
 
