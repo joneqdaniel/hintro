@@ -75,7 +75,7 @@ void sound_halt()
 	struct termios info;
 	snd.exit();
 	tcgetattr(STDIN_FILENO, &info);
-	info.c_lflag |=ICANON;
+	info.c_lflag |= ICANON;
 	info.c_lflag |= ECHO;
 	tcsetattr(STDIN_FILENO, TCSANOW, &info);
 }
