@@ -3,8 +3,6 @@ cmake_minimum_required( VERSION 3.10 )
 project( hintro VERSION 0.1 LANGUAGES C )
 set(PROJECT_DESCRIPTION "Random Synth Tone Generator example using BASS library in C")
 
-include(GNUInstallDirs)
-
 if( NOT CMAKE_BUILD_TYPE )
         set( CMAKE_BUILD_TYPE Release CACHE STRING "Choose the type of build." FORCE )
 endif()
@@ -12,6 +10,9 @@ endif()
 set( CMAKE_C_STANDARD 23 )
 set( CMAKE_C_STANDARD_REQUIRED ON )
 set( CMAKE_C_EXTENSIONS ON )
+
+if(NOT CMAKE_C_COMPILER MATCHES "MSVC")
+include(GNUInstallDirs)
 
 if( CMAKE_BUILD_TYPE EQUAL Debug )
 	add_compile_options(-g)
@@ -35,6 +36,7 @@ add_compile_options(-Wno-int-conversion)
 add_link_options(-Wl,--gc-sections)
 add_link_options(-Wl,--print-gc-sections)
 add_link_options(-Wl,-s)
+endif()
 
 find_package(bass)
 
