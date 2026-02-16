@@ -11,12 +11,15 @@ Random Synth Tone Generator example using BASS library in C
 ## Compile
 
 ```sh
-cmake .
-make
-./hintro
+cmake . --install-prefix=/usr
+make install
 ```
 
 ## Usage
+
+```sh
+./hintro
+```
 
 - Press any key to switch random tone
 - Press ESC to exit
