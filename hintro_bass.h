@@ -51,7 +51,7 @@ BOOL sound_init(int freq)
 
 	BASS_GetInfo(&snd.info);
 	snd.sink   = sound_proc;
-	snd.stream = BASS_StreamCreate(snd.info.freq, 2, BASS_SAMPLE_FLOAT, snd.sink, 0);
+	snd.stream = BASS_StreamCreate(snd.info.freq, 2, BASS_SAMPLE_FLOAT, snd.sink, &snd);
 	if(snd.stream == 0)
 	{
 		fprintf(stderr, "Can't create stream!\n");
