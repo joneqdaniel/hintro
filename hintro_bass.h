@@ -16,9 +16,10 @@
 typedef BOOL BASSDEF(EXIT)(void);
 typedef BOOL BASSDEF(PLAY)(DWORD handle, BOOL restart);
 typedef BOOL (CALLBACK INIT)(int freq);
-DWORD CALLBACK cb_audio(HSTREAM handle, void *buffer, DWORD length, void *user);
 
-BOOL sound_init(int freq);
+DWORD CALLBACK sound_proc(HSTREAM handle, void *buffer, DWORD length, void *user);
+void           sound_halt();
+BOOL           sound_init(int freq);
 
 typedef struct sound
 {
@@ -30,34 +31,8 @@ typedef struct sound
 	HSTREAM     stream;
 	unsigned int  prng;
 } SOUND;
-SOUND snd = { .exit = BASS_Free, .play = BASS_ChannelPlay, .init = sound_init, .sink = cb_audio };
 
-void sound_halt()
-{
-	struct termios info;
-	snd.exit();
-	tcgetattr(STDIN_FILENO, &info);
-	info.c_lflag |= ICANON;
-	info.c_lflag |= ECHO;
-	tcsetattr(STDIN_FILENO, TCSANOW, &info);
-}
-
-DWORD CALLBACK cb_audio(HSTREAM handle, void *buffer, DWORD length, void *user)
-{
-	static int cur = 0;
-	memset(buffer, 0, length);
-	for(int c = 0; c < length / sizeof(float); c+=2)
-	{
-		float samples;
-		const int freq = (cur + snd.prng + 1) / 10;
-		const float phase = cur * freq / (float)snd.info.freq;
-		((float*)buffer)[c] = sinf(phase *  2 * (float)M_PI);
-		((float*)buffer)[c+1] = cosf(phase * 2 * (float)M_PI);
-		cur++;
-		cur %= snd.info.freq;
-	}
-	return length;
-}
+SOUND snd = { .exit = BASS_Free, .play = BASS_ChannelPlay, .init = sound_init, .sink = sound_proc };
 
 BOOL sound_init(int freq)
 {
@@ -75,7 +50,7 @@ BOOL sound_init(int freq)
 	atexit(sound_halt);
 
 	BASS_GetInfo(&snd.info);
-	snd.sink   = cb_audio;
+	snd.sink   = sound_proc;
 	snd.stream = BASS_StreamCreate(snd.info.freq, 2, BASS_SAMPLE_FLOAT, snd.sink, 0);
 	if(snd.stream == 0)
 	{
@@ -83,6 +58,7 @@ BOOL sound_init(int freq)
 		return false;
 	}
 	BASS_ChannelSetAttribute(snd.stream, BASS_ATTRIB_BUFFER, 0);
+
 	struct termios info;
 	tcgetattr(0, &info);
 	info.c_lflag &= ~ICANON;
@@ -90,5 +66,18 @@ BOOL sound_init(int freq)
 	info.c_cc[VMIN] = 1;
 	info.c_cc[VTIME] = 0;
 	tcsetattr(STDIN_FILENO, TCSANOW, &info);
+
 	return true;
 }
+
+void sound_halt()
+{
+	struct termios info;
+	snd.exit();
+	tcgetattr(STDIN_FILENO, &info);
+	info.c_lflag |=ICANON;
+	info.c_lflag |= ECHO;
+	tcsetattr(STDIN_FILENO, TCSANOW, &info);
+}
+
+

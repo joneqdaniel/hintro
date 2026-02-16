@@ -41,3 +41,4 @@ find_package(bass)
 add_executable( ${PROJECT_NAME} hintro.c )
 target_link_libraries( ${PROJECT_NAME} bass m )
 
+install(TARGETS ${PROJECT_NAME} RUNTIME DESTINATION bin)
