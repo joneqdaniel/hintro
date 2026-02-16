@@ -1,7 +1,7 @@
 cmake_minimum_required( VERSION 3.10 )
 
 project( hintro VERSION 0.1 LANGUAGES C )
-set(PROJECT_DESCRIPTION "Random Synth Tone Generator Example using BASS library in C")
+set(PROJECT_DESCRIPTION "Random Synth Tone Generator example using BASS library in C")
 
 include(GNUInstallDirs)
 
