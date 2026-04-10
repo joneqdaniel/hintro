@@ -19,7 +19,7 @@ DWORD CALLBACK sound_proc(HSTREAM handle, void *buf, DWORD len, void *user)
 	return len;
 }
 
-BOOL sound_feed()
+BOOL sound_loop()
 {
 	char c = 0;
 	while((c = getc(stdin)) >= 0 && c != 27)
@@ -29,5 +29,5 @@ BOOL sound_feed()
 
 int main(int argc, char** argv)
 {
-	exit(snd.init(44100) && snd.play(snd.stream, FALSE) && snd.feed() ? EXIT_SUCCESS : EXIT_FAILURE);
+	exit(snd.init(44100) && snd.play(snd.stream, FALSE) && snd.loop() ? EXIT_SUCCESS : EXIT_FAILURE);
 }
