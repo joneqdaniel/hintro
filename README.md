@@ -27,6 +27,8 @@ make install
 ## Synth
 
 ```c
+#include "hintro_bass.h"
+
 DWORD CALLBACK sound_proc(HSTREAM handle, void *buf, DWORD len, void *user)
 {
 	const SOUND* cfg = (SOUND*)user;
@@ -44,5 +46,18 @@ DWORD CALLBACK sound_proc(HSTREAM handle, void *buf, DWORD len, void *user)
 		cur %= cfg->info.freq;
 	}
 	return len;
+}
+
+BOOL sound_feed()
+{
+	char c = 0;
+	while((c = getc(stdin)) >= 0 && c != 27)
+		snd.prng = rand();
+	return TRUE;
+}
+
+int main(int argc, char** argv)
+{
+	exit(snd.init(44100) && snd.play(snd.stream, FALSE) && snd.feed() ? EXIT_SUCCESS : EXIT_FAILURE);
 }
 ```

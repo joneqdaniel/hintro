@@ -16,23 +16,26 @@
 typedef BOOL BASSDEF(EXIT)(void);
 typedef BOOL BASSDEF(PLAY)(DWORD handle, BOOL restart);
 typedef BOOL (CALLBACK INIT)(int freq);
+typedef BOOL FEED(void);
 
 DWORD CALLBACK sound_proc(HSTREAM handle, void *buf, DWORD len, void *user);
 void           sound_halt();
 BOOL           sound_init(int freq);
+BOOL           sound_feed();
 
 typedef struct sound
 {
 	EXIT*         exit;
 	PLAY*         play;
 	INIT*         init;
+	FEED*         feed;
 	STREAMPROC*   sink;
 	BASS_INFO     info;
 	HSTREAM     stream;
 	unsigned int  prng;
 } SOUND;
 
-SOUND snd = { .exit = BASS_Free, .play = BASS_ChannelPlay, .init = sound_init, .sink = sound_proc };
+SOUND snd = { .exit = BASS_Free, .play = BASS_ChannelPlay, .init = sound_init, .feed = sound_feed, .sink = sound_proc };
 
 BOOL sound_init(int freq)
 {
